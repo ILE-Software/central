@@ -1,0 +1,25 @@
+{
+    "name": "ilelabs/central",
+    "description": "OpenAI Realtime SIP bridge for PBX / Netgsm santral. Phone only — no business panel.",
+    "type": "project",
+    "license": "MIT",
+    "require": {
+        "php": "^8.2"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^11.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "Central\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Central\\Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "test": "phpunit"
+    }
+}

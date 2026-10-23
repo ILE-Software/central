@@ -1,0 +1,26 @@
+[general]
+static=yes
+writeprotect=yes
+
+[netgsm-incoming]
+exten => 100,1,NoOp(Central inbound SIP bridge)
+ same => n,Set(GROUP()=central-phone)
+ same => n,GotoIf($[${GROUP_COUNT(central-phone)}>2]?capacity)
+ same => n,Set(TIMEOUT(absolute)=960)
+ same => n,Set(CALLERID(num)=${FILTER(0-9+,${CALLERID(num)})})
+ same => n,Dial(PJSIP/openai/sip:PROJECT_ID@sip.api.openai.com:5061\;transport=tls,45)
+ same => n,Hangup()
+ same => n(capacity),Busy(1)
+ same => n,Hangup()
+exten => s,1,Goto(netgsm-incoming,100,1)
+
+[central-outbound]
+exten => s,1,NoOp(Central outbound to OpenAI Realtime SIP)
+ same => n,SIPAddHeader(X-Central-Call-Key: ${CENTRAL_CALL_KEY})
+ same => n,SIPAddHeader(X-Central-Call-Token: ${CENTRAL_CALL_TOKEN})
+ same => n,Dial(PJSIP/openai/sip:PROJECT_ID@sip.api.openai.com:5061\;transport=tls,45)
+ same => n,Hangup()
+
+[reject-incoming]
+exten => _X.,1,Hangup(21)
+exten => s,1,Hangup(21)
